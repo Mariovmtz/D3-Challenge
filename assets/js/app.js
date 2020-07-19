@@ -59,9 +59,8 @@ function createLabels(dir, xPos, yPos, iPos, padding, degrees){
 
 
 /*------------------------------
-FUNCTIONS
+PROMISE AWAITING
 -----------------------------*/
-
 d3.csv("assets/data/data.csv").then(function(srcData) {
 
     // Assign starting variables
@@ -136,7 +135,7 @@ function renderXAxes(newXScale, xAxis) {
     let bottomAxis = d3.axisBottom(newXScale);
   
     xAxis.transition()
-      .duration(1000)
+      .duration(800)
       .call(bottomAxis);
   
     return xAxis;
@@ -154,12 +153,12 @@ function renderXCircles(circlesGroup, newXScale, chosenXaxis, newYScale, chosenY
   return circlesGroup;
 }
 
-
+// Event Handler for g element on x-axis
 xlabel.selectAll("text").on("click", function() {
-   // get value of selection
 
     let label = d3.select(this)
     let value = label.attr("value");
+
         if (value != xSelected) {
             xlabel.selectAll("text")
                 .classed("active", false)
@@ -167,66 +166,13 @@ xlabel.selectAll("text").on("click", function() {
             label.classed("active", true)
                 .classed("inactive", false);
 
-        }
-     // replaces chosenXAxis with value
-     //   xSelected = value;
-     //   ySelected = "healthcare"
-     // updates x scale for new data
-     //   xLinearScale = getlinearScale(srcData, xSelected, 0, WIDTH)
-     //   yLinearScale = getlinearScale(srcData, xSelected, HEIGHT, 0)
-     // updates x axis with transition
-      //  xAxis = renderXAxes(xLinearScale, xAxis);
+            xSelected = value;
+            xLinearScale = getlinearScale(srcData, xSelected, 0, WIDTH)
+            xAxis = renderXAxes(xLinearScale, xAxis);
+            gCirclesGroup = renderXCircles(gCirclesGroup, xLinearScale, xSelected, yLinearScale, ySelected);
+            circlesGroup = updateToolTip(gCirclesGroup, "poverty","In Poverty", "%", "healthcare", "Lacks healthcare", "%");
+    }
 
-     // updates circles with new x values
-      //  circles = renderXCircles(gCirclesGroup, xLinearScale, xSelected, yLinearScale, ySelected);
-
-/*
-     // updates circles text with new x values
-        circlesText = renderXText(circlesText, xLinearScale, xSelected);
-*/
-
-     // updates tooltips with new info
-      //  circlesGroup = updateToolTip(circlesGroup, xSelected, ySelected);
-
-
-
-     // changes classes to change bold text
-     /*
-     if (xSelected === "age") {
-       povertyLabel
-         .classed("active", false)
-         .classed("inactive", true);
-       ageLabel
-         .classed("active", true)
-         .classed("inactive", false);
-       incomeLabel
-         .classed("active", false)
-         .classed("inactive", true);
-     }
-     else if (xSelected === "income") {
-       povertyLabel
-         .classed("active", false)
-         .classed("inactive", true);
-       ageLabel
-         .classed("active", false)
-         .classed("inactive", true);
-       incomeLabel
-         .classed("active", true)
-         .classed("inactive", false);
-     }
-     else {
-       povertyLabel
-         .classed("active", true)
-         .classed("inactive", false);
-       ageLabel
-         .classed("active", false)
-         .classed("inactive", true);
-       incomeLabel
-         .classed("active", false)
-         .classed("inactive", true);
-     }
-
-*/
 
  });
 
